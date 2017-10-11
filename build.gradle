@@ -14,7 +14,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
     }
 }
@@ -67,7 +67,6 @@ if (ext.tag) {
         ext.releaseType = "alpha"
     curseforge {
         apiKey = System.getenv("CURSE_API_KEY") ?: ""
-        ext.tag = System.getenv("TRAVIS_TAG") ?: ""
         project {
             id = "279748"
             changelog = System.getenv("TRAVIS_COMMIT_MESSAGE") ?: ""

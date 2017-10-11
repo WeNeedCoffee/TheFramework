@@ -15,17 +15,21 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
+apply plugin: "com.matthewprenger.cursegradle"
 
-ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
-version = "1.0.0-$buildNumber"
+ext.build = System.getenv('TRAVIS_BUILD_NUMBER')
+ext.tag = System.getenv("TRAVIS_TAG")
+version = "1.12.2-1.0"
+version =  version + "-build-T" + ext.build
 group= "com.austinv11.collectiveframework" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "CollectiveFramework"
+archivesBaseName = "TheFramework"
 
 minecraft {
     version = "1.12.2-14.23.0.2486"
@@ -43,41 +47,59 @@ publishing {
     }
 }
 
-bintray {
-    user = 'austinv11'
-    key = System.getenv("API_KEY")
-    dryRun = false
-    publish = true
-    publications = ['mavenJava']
-    pkg {
-        repo = "maven"
-        name = "CollectiveFramework"
-        desc = "A common library between all of austinv11's creations"
-        websiteUrl = "https://github.com/austinv11/CollectiveFramework"
-        issueTrackerUrl = "https://github.com/austinv11/CollectiveFramework/issues"
-        vcsUrl = "https://github.com/austinv11/CollectiveFramework.git"
-        licenses = ["GPL v2"]
-        publicDownloadNumbers = true
-        version {
-            name = project.version
+// deobf jars
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest {
+        attributes 'FMLAT': 'cf_at.cfg',
+                'FMLCorePlugin': 'com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin',
+                'FMLCorePluginContainsFMLMod': true
+    }
+}
+
+if (ext.tag) {
+    if (ext.tag.contains("release"))
+        ext.releaseType = "release"
+    else if (ext.tag.contains("beta"))
+        ext.releaseType = "beta"
+    else
+        ext.releaseType = "alpha"
+    curseforge {
+        apiKey = System.getenv("CURSE_API_KEY") ?: ""
+        ext.tag = System.getenv("TRAVIS_TAG") ?: ""
+        project {
+            id = "279748"
+            changelog = System.getenv("TRAVIS_COMMIT_MESSAGE") ?: ""
+            releaseType = project.releaseType
+            mainArtifact jar
+            addArtifact deobfJar
+        }
+    }
+    bintray {
+        user = 'rolandoislas'
+        key = System.getenv("BINTRAY_API_KEY") ?: ""
+        dryRun = false
+        publish = true
+        publications = ['mavenJava']
+        pkg {
+            repo = "The-Framework"
+            name = "TheFramework"
+            desc = "A Minecraft Mod Framework"
+            websiteUrl = "https://github.com/rolandoislas/TheFramework"
+            issueTrackerUrl = "https://github.com/rolandoislas/TheFramework/issues"
+            vcsUrl = "https://github.com/rolandoislas/TheFramework.git"
+            licenses = ["GPL v2"]
+            publicDownloadNumbers = true
+            version {
+                name = project.version + "-" + project.releaseType
+            }
         }
     }
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    
 }
 
 processResources
@@ -106,6 +128,7 @@ jar {
                 'FMLCorePlugin': 'com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin',
                 'FMLCorePluginContainsFMLMod': true
     }
+    dependsOn deobfJar
 }
 
 idea {
@@ -113,16 +136,3 @@ idea {
         inheritOutputDirs = true
     }
 }
-
-// deobf jars
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'deobf'
-    manifest {
-        attributes 'FMLAT': 'cf_at.cfg',
-                'FMLCorePlugin': 'com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin',
-                'FMLCorePluginContainsFMLMod': true
-    }
-}
-
-build.dependsOn sourceJar, deobfJar

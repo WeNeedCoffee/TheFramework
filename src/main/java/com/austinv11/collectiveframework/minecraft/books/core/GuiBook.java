@@ -39,7 +39,6 @@ public class GuiBook extends GuiScreen {
 	private EntityPlayer player;
 	
 	public GuiBook(EntityPlayer player) {
-		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 		ItemStack heldItem = player.getHeldItem();
 		if (heldItem == null || !(heldItem.getItem() instanceof ItemBook)) {
@@ -218,7 +217,6 @@ public class GuiBook extends GuiScreen {
 	@Override
 	public void onGuiClosed() {
 		book.onClose();
-		FMLCommonHandler.instance().bus().unregister(this);
 		MinecraftForge.EVENT_BUS.unregister(this);
 	}
 	

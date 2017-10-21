@@ -1,6 +1,5 @@
 package com.austinv11.collectiveframework.minecraft;
 
-import com.austinv11.collectiveframework.minecraft.asm.Transformer;
 import com.austinv11.collectiveframework.minecraft.client.gui.GuiHandler;
 import com.austinv11.collectiveframework.minecraft.compat.modules.Modules;
 import com.austinv11.collectiveframework.minecraft.config.ConfigException;
@@ -42,12 +41,6 @@ public class CollectiveFramework {
 	
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
-	
-	/**
-	 * If this is true, the mod is loaded in a development environment
-	 */
-	public static boolean IS_DEV_ENVIRONMENT;
-	private static boolean didCheck = false;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -59,7 +52,6 @@ public class CollectiveFramework {
 			e.printStackTrace();
 		}
 		ConfigRegistry.init();
-		checkEnvironment();
 		proxy.registerEvents();
 		Modules.init();
 		SimpleRunnable.RESTRICT_THREAD_USAGE = Config.restrictThreadUsage;
@@ -72,7 +64,6 @@ public class CollectiveFramework {
 	public void init(FMLInitializationEvent event) {
 		TimeProfiler profiler = new TimeProfiler();
 		ConfigRegistry.init();
-		checkEnvironment();
 		proxy.prepareClient();
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 		Modules.propagate(event);
@@ -83,22 +74,12 @@ public class CollectiveFramework {
 	public void postInit(FMLPostInitializationEvent event) {
 		TimeProfiler profiler = new TimeProfiler();
 		ConfigRegistry.init();
-		checkEnvironment();
 		NETWORK.registerMessage(TileEntityServerUpdatePacket.TileEntityServerUpdatePacketHandler.class, TileEntityServerUpdatePacket.class, 0, Side.SERVER);
 		NETWORK.registerMessage(TileEntityClientUpdatePacket.TileEntityClientUpdatePacketHandler.class, TileEntityClientUpdatePacket.class, 1, Side.CLIENT);
 		NETWORK.registerMessage(ConfigPacket.ConfigPacketHandler.class, ConfigPacket.class, 2, Side.CLIENT);
 		NETWORK.registerMessage(TimeUpdatePacket.TimeUpdatePacketHandler.class, TimeUpdatePacket.class, 3, Side.SERVER);
 		Modules.propagate(event);
 		LOGGER.info("Post-Init took "+profiler.getTime()+"ms");
-	}
-	
-	private void checkEnvironment() {
-		if (Transformer.didCheck && !didCheck) {
-			IS_DEV_ENVIRONMENT = Transformer.isDev;
-			didCheck = true;
-			if (IS_DEV_ENVIRONMENT)
-				LOGGER.info("This is running in a dev environment!");
-		}
 	}
 	
 	@SubscribeEvent

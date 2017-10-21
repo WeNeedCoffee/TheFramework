@@ -15,9 +15,6 @@ public class Config {
 	@Description(comment = "This causes threads (which utilizes SimpleRunnable) to be reused; this *may* lead to performance improvements on lower end machines", category = "Misc")
 	public static boolean restrictThreadUsage = true;
 	
-	@Description(comment = "If enabled (ONLY EFFECTS YOUR CLIENT) you could use essentials color codes", category = "Misc", clientSideOnly = true)
-	public static boolean applyColorPatch = true;
-	
 	@Description(comment = "When enabled, misc tooltips will be displayed on items. Useful for debugging!", category = "Development", clientSideOnly = true)
 	public static boolean debugTooltips = false;
 	
@@ -32,15 +29,6 @@ public class Config {
 	
 	@Description(comment = "This is the rate at which time changes by when pressing a time button", category = "Misc")
 	public static int timeChangeRate = 30;
-	
-	@Description(comment = "You know you wanna enable this ;)", category = "Misc", clientSideOnly = true)
-	public static boolean enableCloudToButt = false;
-	
-	@Description(comment = "Plays a click sound when the main menu opens", category = "Misc", clientSideOnly = true)
-	public static boolean clickOnMainMenuOpen = true;
-	
-	@Description(comment = "This can reduce the amount of RAM and permgen needed to run mc, but this disables various text related features", category = "Misc", clientSideOnly = true)
-	public static boolean disableRenderTextEvents = false;
 
 	@Description(comment = "Valid API key used for Yandex translations", category = "Translation", clientSideOnly = true)
 	public static String yandexApiKey = "";

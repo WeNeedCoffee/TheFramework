@@ -18,32 +18,19 @@ public class ClientTickHandler {
 	private static int startCloudTicks = -1;
 	private static boolean wasDown = false;
 	
-	private static boolean wasKonga = false;
-	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event) {
-		if (HooksHandler.kongaTime && !wasKonga) {
-			HooksHandler.kongaTick = HooksHandler.START_KONGA_TIME+1;
-			wasKonga = true;
-		} 
-		if (HooksHandler.kongaTick > 0) {
-			HooksHandler.kongaTick--;
-		} else if (HooksHandler.kongaTick == 0 && wasKonga) {
-			HooksHandler.kongaTime = false;
-			wasKonga = false;
-		}
-		
 		if (Config.enableButtonTimeChanging) {
 			if (Minecraft.getMinecraft().world != null) {
-				if (LogicUtils.xor(Keybindings.TIME_BACK.isPressed(), Keybindings.TIME_FORWARD.isPressed())) {
+				if (LogicUtils.xor(Keybindings.TIME_BACK.isKeyDown(), Keybindings.TIME_FORWARD.isKeyDown())) {
 					if (startWorldTime == -1)
 						startWorldTime = Minecraft.getMinecraft().world.getWorldTime();
 					if (startCloudTicks == -1)
 						startCloudTicks = Minecraft.getMinecraft().renderGlobal.cloudTickCounter;
 					
 					boolean isForward;
-					isForward = !Keybindings.TIME_BACK.isPressed();
+					isForward = !Keybindings.TIME_BACK.isKeyDown();
 					
 					wasDown = true;
 					int difference = (isForward ? Config.timeChangeRate : -Config.timeChangeRate);
@@ -52,9 +39,10 @@ public class ClientTickHandler {
 					Minecraft.getMinecraft().renderGlobal.cloudTickCounter = startCloudTicks+totalTimeChange;
 				}
 				
-				if (wasDown && LogicUtils.nor(Keybindings.TIME_BACK.isPressed(),
-						Keybindings.TIME_FORWARD.isPressed())) {
-					CollectiveFramework.NETWORK.sendToServer(new TimeUpdatePacket(startWorldTime, totalTimeChange, Minecraft.getMinecraft().player.getGameProfile()));
+				if (wasDown && LogicUtils.nor(Keybindings.TIME_BACK.isKeyDown(),
+						Keybindings.TIME_FORWARD.isKeyDown())) {
+					CollectiveFramework.NETWORK.sendToServer(new TimeUpdatePacket(startWorldTime, totalTimeChange,
+							Minecraft.getMinecraft().player.getGameProfile()));
 					startWorldTime = -1;
 					totalTimeChange = 0;
 					startCloudTicks = -1;

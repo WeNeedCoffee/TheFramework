@@ -74,7 +74,7 @@ public class WorldUtils {
 	 */
 	public static EntityItem spawnItemInWorld(Location location, ItemStack stack) {
 		EntityItem item = new EntityItem(location.getWorld(), location.getX(), location.getY(), location.getZ(), stack);
-		location.getWorld().spawnEntity(item);
+		location.getWorld().spawnEntityInWorld(item);
 		return item;
 	}
 	

@@ -42,7 +42,7 @@ public class GuiBook extends GuiScreen {
 	public GuiBook(EntityPlayer player) {
 		MinecraftForge.EVENT_BUS.register(this);
 		ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-		if (heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemBook)) {
+		if (heldItem == null || !(heldItem.getItem() instanceof ItemBook)) {
 			GuiUtils.closeCurrentGui();
 			return;
 		}

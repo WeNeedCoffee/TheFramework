@@ -100,7 +100,7 @@ public abstract class Entry extends GuiScreen {
 	 * @param rotation The rotation
 	 */
 	public void setRotation(float rotation) {
-		this.rotation = MathHelper.clamp(rotation, 0, 360);
+		this.rotation = MathHelper.clamp_float(rotation, 0, 360);
 	}
 	
 	/**

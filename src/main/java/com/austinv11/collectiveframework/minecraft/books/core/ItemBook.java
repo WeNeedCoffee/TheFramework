@@ -27,7 +27,8 @@ public abstract class ItemBook extends ItemBase {
 	public abstract Class<? extends Book> getBook();
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player,
+													EnumHand hand) {
 		openBook(player);
 		return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}

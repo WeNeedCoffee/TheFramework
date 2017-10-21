@@ -17,7 +17,7 @@ public class TooltipHandler {
 	
 	@SubscribeEvent
 	public void onTooltip(ItemTooltipEvent event) {
-		if (Config.debugTooltips && !event.getItemStack().isEmpty()) {
+		if (Config.debugTooltips && event.getItemStack() != null) {
 			event.getToolTip().addAll(getUnlocalisedName(event.getItemStack()));
 			event.getToolTip().addAll(getOreDictTooltip(event.getItemStack()));
 			event.getToolTip().addAll(getNBTTooltip(event.getItemStack()));

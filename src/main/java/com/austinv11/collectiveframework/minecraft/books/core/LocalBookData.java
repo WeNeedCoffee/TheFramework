@@ -44,11 +44,11 @@ public class LocalBookData extends WorldSavedData {
 	private static LocalBookData loadData() {
 		if (!hasLoaded)
 			createData();
-		return (LocalBookData) DimensionManager.getWorld(0).loadData(LocalBookData.class, IDENTIFIER);
+		return (LocalBookData) DimensionManager.getWorld(0).loadItemData(LocalBookData.class, IDENTIFIER);
 	}
 	
 	private static void createData() {
-		DimensionManager.getWorld(0).setData(IDENTIFIER, new LocalBookData());
+		DimensionManager.getWorld(0).setItemData(IDENTIFIER, new LocalBookData());
 		hasLoaded = true;
 	}
 	

@@ -8,20 +8,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import scala.actors.threadpool.Arrays;
+
+import java.util.List;
 
 /**
  * An entity implementation with an inventory
  */
 public abstract class EntityInventory extends Entity implements IInventory {
 
-	public NonNullList<ItemStack> items;
+	public List<ItemStack> items;
 
 	public EntityInventory(World world) {
 		super(world);
-		items = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+		items = Arrays.asList(new ItemStack[getSizeInventory()]);
 	}
 
 	@Override
@@ -30,10 +32,10 @@ public abstract class EntityInventory extends Entity implements IInventory {
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tag) {
 		NBTTagList itemsNbt = tag.getTagList("items", Constants.NBT.TAG_COMPOUND);
-		items = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+		items = Arrays.asList(new ItemStack[getSizeInventory()]);
 		for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
 			NBTTagCompound itemNbt = itemsNbt.getCompoundTagAt(itemIndex);
-			items.set(itemIndex, new ItemStack(itemNbt));
+			items.set(itemIndex, ItemStack.loadItemStackFromNBT(itemNbt));
 		}
 	}
 
@@ -85,12 +87,12 @@ public abstract class EntityInventory extends Entity implements IInventory {
 	@Override
 	public void markDirty() {
 		for (int i = 0; i < items.size(); i++)
-			if (!items.get(i).isEmpty() && items.get(i).getCount() < 1)
-				items.set(i, ItemStack.EMPTY);
+			if (items.get(i) != null && items.get(i).stackSize < 1)
+				items.set(i, null);
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
+	public boolean isUseableByPlayer(EntityPlayer player) {
 		return true;
 	}
 
@@ -102,17 +104,6 @@ public abstract class EntityInventory extends Entity implements IInventory {
 
 	@Override
 	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
-
-	@Override
-	public abstract boolean processInitialInteract(EntityPlayer player, EnumHand hand);
-
-	@Override
-	public boolean isEmpty() {
-		for (ItemStack itemStack : items)
-			if (!itemStack.isEmpty())
-				return false;
-		return true;
-	}
 
 	@Override
 	public int getField(int id) {

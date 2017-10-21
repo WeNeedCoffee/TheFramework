@@ -1,7 +1,5 @@
 package com.austinv11.collectiveframework.minecraft.client.gui;
 
-import com.austinv11.collectiveframework.minecraft.reference.Config;
-import com.austinv11.collectiveframework.minecraft.reference.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
@@ -16,18 +14,8 @@ public class GuiFactory implements IModGuiFactory {
     }
 
     @Override
-    public boolean hasConfigGui() {
-        return true;
-    }
-
-    @Override
-    public GuiScreen createConfigGui(GuiScreen parentScreen) {
-        return CfGuiFactory.createConfigGui(Config.INSTANCE, parentScreen, Reference.MOD_ID, Reference.MOD_NAME);
-    }
-
-    @Override
     public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return null;
+        return GuiConfig.class;
     }
 
     @Override

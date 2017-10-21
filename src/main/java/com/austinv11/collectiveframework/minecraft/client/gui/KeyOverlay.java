@@ -30,8 +30,8 @@ public class KeyOverlay {
 				Color color = Color.WHITE;
 				for (int i = 0; i < KEY_LIFE_LENGTH/(ticksLived*2); i++)
 					color = color.darker();
-				Minecraft.getMinecraft().fontRenderer.drawString(s, x, 1, color.getRGB());
-				x += Minecraft.getMinecraft().fontRenderer.getStringWidth(s)+3;
+				Minecraft.getMinecraft().fontRendererObj.drawString(s, x, 1, color.getRGB());
+				x += Minecraft.getMinecraft().fontRendererObj.getStringWidth(s)+3;
 				if (ticksLived > 1)
 					newKeys.add(new Object[]{s, --ticksLived});
 			}

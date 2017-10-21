@@ -30,7 +30,7 @@ public class TextEntry extends Entry {
 	public Alignment alignment = Alignment.LEFT;
 	private String toRender;
 	@SideOnly(Side.CLIENT)
-	private FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
+	private FontRenderer renderer = Minecraft.getMinecraft().fontRendererObj;
 	
 	public TextEntry(TwoDimensionalVector coords, int width, int height, String toRender) {
 		this(coords, width, height);

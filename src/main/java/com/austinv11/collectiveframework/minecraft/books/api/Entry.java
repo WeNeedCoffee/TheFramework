@@ -36,7 +36,7 @@ public abstract class Entry extends GuiScreen {
 		this.width = width;
 		this.height = height;
 		this.mc = Minecraft.getMinecraft();
-		this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		this.fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
 	}
 	
 	/**

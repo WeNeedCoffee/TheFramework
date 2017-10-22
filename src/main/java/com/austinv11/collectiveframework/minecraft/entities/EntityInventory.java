@@ -44,7 +44,8 @@ public abstract class EntityInventory extends Entity implements IInventory {
 		NBTTagList itemsNbt = new NBTTagList();
 		for (ItemStack item : items) {
 			NBTTagCompound itemNbt = new NBTTagCompound();
-			item.writeToNBT(itemNbt);
+			if (item != null)
+				item.writeToNBT(itemNbt);
 			itemsNbt.appendTag(itemNbt);
 		}
 		tag.setTag("items", itemsNbt);

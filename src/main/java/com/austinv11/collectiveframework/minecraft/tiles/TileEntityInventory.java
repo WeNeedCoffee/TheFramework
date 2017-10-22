@@ -53,7 +53,8 @@ public abstract class TileEntityInventory extends TileEntity implements IInvento
 		NBTTagList itemsNbt = new NBTTagList();
 		for (ItemStack item : items) {
 			NBTTagCompound itemNbt = new NBTTagCompound();
-			item.writeToNBT(itemNbt);
+			if (item != null)
+				item.writeToNBT(itemNbt);
 			itemsNbt.appendTag(itemNbt);
 		}
 		nbttagcompound.setTag("items", itemsNbt);

@@ -1,9 +1,8 @@
 package com.austinv11.collectiveframework.minecraft.reference;
 
 public class Reference {
-	 
-	public static final String MOD_ID = "CollectiveFramework";
-	public static final String MOD_NAME = "Collective Framework";
+	public static final String MOD_ID = "theframework";
+	public static final String MOD_NAME = "The Framework";
 	public static final String VERSION = "@VERSION@";
 	public static final String SERVER_PROXY_CLASS = "com.austinv11.collectiveframework.minecraft.proxy.CommonProxy";
 	public static final String CLIENT_PROXY_CLASS = "com.austinv11.collectiveframework.minecraft.proxy.ClientProxy";

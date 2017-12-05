@@ -31,7 +31,7 @@ repositories {
     }
 }
 dependencies {
-    compile "com.austinv11.collectiveframework:CollectiveFramework:$VERSION"
+    compile "com.rolandoislas.theframework:TheFramework:$VERSION"
 }
 ```
 

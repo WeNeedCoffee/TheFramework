@@ -4,6 +4,8 @@ import com.austinv11.collectiveframework.language.TranslationManager;
 import com.austinv11.collectiveframework.language.translation.TranslationException;
 import com.austinv11.collectiveframework.minecraft.reference.Config;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
@@ -18,6 +20,7 @@ import java.util.Locale;
 /**
  * Translation Manager for use in Minecraft
  */
+@SideOnly(Side.CLIENT)
 public class MinecraftTranslator {
 	
 	private static Field fallback;

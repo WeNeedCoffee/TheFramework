@@ -9,34 +9,32 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        maven { url = "https://plugins.gradle.org/m2/" }
         jcenter()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
     }
 }
 
 apply plugin: 'forge'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
+apply plugin: "com.matthewprenger.cursegradle"
 
-ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
-version = "1.0.0-$buildNumber"
-group= "com.austinv11.collectiveframework" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "CollectiveFramework"
+ext.build = System.getenv('TRAVIS_BUILD_NUMBER')
+ext.tag = System.getenv("TRAVIS_TAG")
+version = "1.7.10-1.0"
+version =  version + "-build-T" + ext.build
+group= "com.rolandoislas.theframework" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "TheFramework"
 
 minecraft {
     version = "1.7.10-10.13.4.1448-1.7.10"
     runDir = "eclipse"
     replace("@VERSION@", project.version)
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    //  mappings = "snapshot_nodoc_20150223"
-//    mappings = "stable_12"
 }
 
 publishing {
@@ -48,42 +46,61 @@ publishing {
     }
 }
 
-bintray {
-    user = 'austinv11'
-    key = System.getenv("API_KEY")
-    dryRun = false
-    publish = true
-    publications = ['mavenJava']
-    pkg {
-        repo = "maven"
-        name = "CollectiveFramework"
-        desc = "A common library between all of austinv11's creations"
-        websiteUrl = "https://github.com/austinv11/CollectiveFramework"
-        issueTrackerUrl = "https://github.com/austinv11/CollectiveFramework/issues"
-        vcsUrl = "https://github.com/austinv11/CollectiveFramework.git"
-        licenses = ["GPL v2"]
-        publicDownloadNumbers = true
-        version {
-            name = project.version
+// deobf jars
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest {
+        attributes 'FMLAT': 'cf_at.cfg'
+    }
+}
+
+// add source jar
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'source'
+}
+
+if (ext.tag) {
+    if (ext.tag.contains("release"))
+        ext.releaseType = "release"
+    else if (ext.tag.contains("beta"))
+        ext.releaseType = "beta"
+    else
+        ext.releaseType = "alpha"
+    curseforge {
+        apiKey = System.getenv("CURSE_API_KEY") ?: ""
+        project {
+            id = "279748"
+            changelog = System.getenv("TRAVIS_COMMIT_MESSAGE") ?: ""
+            releaseType = project.releaseType
+            mainArtifact jar
+            addArtifact deobfJar
+        }
+    }
+    bintray {
+        user = 'rolandoislas'
+        key = System.getenv("BINTRAY_API_KEY") ?: ""
+        dryRun = false
+        publish = true
+        publications = ['mavenJava']
+        pkg {
+            repo = "The-Framework"
+            name = "TheFramework"
+            desc = "A Minecraft Mod Framework"
+            websiteUrl = "https://github.com/rolandoislas/TheFramework"
+            issueTrackerUrl = "https://github.com/rolandoislas/TheFramework/issues"
+            vcsUrl = "https://github.com/rolandoislas/TheFramework.git"
+            licenses = ["GPL v2"]
+            publicDownloadNumbers = true
+            version {
+                name = project.version + "-" + project.releaseType
+            }
         }
     }
 }
 
-dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-}
+dependencies {}
 
 processResources
 {
@@ -107,10 +124,12 @@ processResources
 
 jar {
     manifest {
-        attributes 'FMLAT': 'cf_at.cfg',
-                'FMLCorePlugin': 'com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin',
-                'FMLCorePluginContainsFMLMod': true
+        attributes 'FMLAT': 'cf_at.cfg'
     }
+}
+
+build {
+    dependsOn deobfJar
 }
 
 idea {
@@ -118,22 +137,3 @@ idea {
         inheritOutputDirs = true
     }
 }
-
-// add source jar
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'source'
-}
-
-// deobf jars
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'deobf'
-    manifest {
-        attributes 'FMLAT': 'cf_at.cfg',
-                'FMLCorePlugin': 'com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin',
-                'FMLCorePluginContainsFMLMod': true
-    }
-}
-
-build.dependsOn sourceJar, deobfJar

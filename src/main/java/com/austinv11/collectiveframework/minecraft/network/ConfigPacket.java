@@ -1,5 +1,6 @@
 package com.austinv11.collectiveframework.minecraft.network;
 
+import com.austinv11.collectiveframework.minecraft.CollectiveFramework;
 import com.austinv11.collectiveframework.minecraft.config.ConfigRegistry;
 import com.austinv11.collectiveframework.minecraft.config.ConfigLoadEvent;
 import io.netty.buffer.ByteBuf;
@@ -29,6 +30,8 @@ public class ConfigPacket implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
+		if (tag == null)
+			return;
 		configName = tag.getString("configName");
 		config = tag.getString("config");
 		isRevert = tag.getBoolean("isRevert");
@@ -47,6 +50,11 @@ public class ConfigPacket implements IMessage {
 		
 		@Override
 		public IMessage onMessage(ConfigPacket message, MessageContext ctx) {
+			if (message.configName == null || message.config == null) {
+				CollectiveFramework.LOGGER.warn(String.format("Failed to handle config packet:\n\tName%s",
+						String.valueOf(message.configName)));
+				return null;
+			}
 			ConfigLoadEvent.Pre event = new ConfigLoadEvent.Pre();
 			event.configName = message.configName;
 			event.config = message.config;

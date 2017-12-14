@@ -27,7 +27,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-@Mod(modid= Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, acceptableRemoteVersions = "*"/*, guiFactory = Reference.GUI_FACTORY_CLASS*/)
+@Mod(modid= Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, acceptableRemoteVersions = "*", guiFactory = Reference.GUI_FACTORY_CLASS)
 public class CollectiveFramework {
 	
 	public static SimpleNetworkWrapper NETWORK;

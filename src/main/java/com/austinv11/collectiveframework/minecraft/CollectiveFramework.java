@@ -86,8 +86,15 @@ public class CollectiveFramework {
 	public void onServerJoin(PlayerEvent.PlayerLoggedInEvent event) {
 		if (FMLCommonHandler.instance().getSide() == Side.SERVER || FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			for (ConfigRegistry.ConfigProxy proxy : ConfigRegistry.configs) {
-				if (proxy.doesSync)
-					NETWORK.sendTo(new ConfigPacket(proxy.fileName, proxy.handler.convertToString(proxy.config), false), (EntityPlayerMP) event.player);
+				if (proxy.doesSync) {
+					try {
+						NETWORK.sendTo(new ConfigPacket(proxy.fileName, proxy.handler.convertToString(proxy.config),
+								false), (EntityPlayerMP) event.player);
+					}
+					catch (Exception e) {
+						LOGGER.throwing(e);
+					}
+				}
 			}
 	}
 	
@@ -95,8 +102,15 @@ public class CollectiveFramework {
 	public void onClientDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
 		if (FMLCommonHandler.instance().getSide() == Side.SERVER || FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			for (ConfigRegistry.ConfigProxy proxy : ConfigRegistry.configs) {
-				if (proxy.doesSync)
-					NETWORK.sendTo(new ConfigPacket(proxy.fileName, proxy.handler.convertToString(proxy.config), true), (EntityPlayerMP) event.player);
+				if (proxy.doesSync) {
+					try {
+						NETWORK.sendTo(new ConfigPacket(proxy.fileName, proxy.handler.convertToString(proxy.config),
+								true), (EntityPlayerMP) event.player);
+					}
+					catch (Exception e) {
+						LOGGER.throwing(e);
+					}
+				}
 			}
 	}
 }

@@ -3,6 +3,7 @@ package com.austinv11.collectiveframework.minecraft.config;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public interface IConfigurationHandler {
 	 * Converts the config into a string
 	 * @return The config
 	 */
+	@Nullable
 	public String convertToString(Object config);
 
 	/**

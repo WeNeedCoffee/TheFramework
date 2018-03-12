@@ -28,6 +28,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
+
 @Mod(modid= Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, acceptableRemoteVersions = "*",
 		guiFactory = Reference.GUI_FACTORY_CLASS)
 public class CollectiveFramework {
@@ -84,33 +86,32 @@ public class CollectiveFramework {
 	
 	@SubscribeEvent
 	public void onServerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-		if (FMLCommonHandler.instance().getSide() == Side.SERVER || FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			for (ConfigRegistry.ConfigProxy proxy : ConfigRegistry.configs) {
-				if (proxy.doesSync) {
-					try {
-						NETWORK.sendTo(new ConfigPacket(proxy.fileName, proxy.handler.convertToString(proxy.config),
-								false), (EntityPlayerMP) event.player);
-					}
-					catch (Exception e) {
-						LOGGER.throwing(e);
-					}
-				}
-			}
+		sendProxySyncToClient((EntityPlayerMP) event.player, false);
 	}
 	
 	@SubscribeEvent
 	public void onClientDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
-		if (FMLCommonHandler.instance().getSide() == Side.SERVER || FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		sendProxySyncToClient((EntityPlayerMP) event.player, true);
+	}
+
+	/**
+	 * Send config data to a client
+	 * @param player player to sent to
+	 */
+	private void sendProxySyncToClient(@Nullable EntityPlayerMP player, boolean isRevert) {
+		if (FMLCommonHandler.instance().getSide() == Side.SERVER || FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			for (ConfigRegistry.ConfigProxy proxy : ConfigRegistry.configs) {
-				if (proxy.doesSync) {
+				if (proxy.doesSync && proxy.fileName != null && proxy.config != null & player != null) {
+					String proxyString = proxy.handler.convertToString(proxy.config);
+					if (proxyString == null)
+						continue;
 					try {
-						NETWORK.sendTo(new ConfigPacket(proxy.fileName, proxy.handler.convertToString(proxy.config),
-								true), (EntityPlayerMP) event.player);
-					}
-					catch (Exception e) {
+						NETWORK.sendTo(new ConfigPacket(proxy.fileName, proxyString, isRevert), player);
+					} catch (Exception e) {
 						LOGGER.throwing(e);
 					}
 				}
 			}
+		}
 	}
 }

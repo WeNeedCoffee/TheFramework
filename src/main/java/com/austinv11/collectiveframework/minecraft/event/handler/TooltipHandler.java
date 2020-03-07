@@ -49,9 +49,9 @@ public class TooltipHandler {
 		tooltip.add(Colors.UNDERLINE+"String Item ID:");
 		Item item = stack.getItem();
 		if (item instanceof ItemBlock) {
-			tooltip.add(Block.getBlockFromItem(item).getUnlocalizedName());
+			tooltip.add(Block.getBlockFromItem(item).getTranslationKey());
 		} else {
-			tooltip.add(item.getUnlocalizedName());
+			tooltip.add(item.getTranslationKey());
 		}
 		return tooltip;
 	}

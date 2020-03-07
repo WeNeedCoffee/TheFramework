@@ -65,7 +65,7 @@ public class ConfigPacket implements IMessage {
 				newEvent.configName = event.configName;
 				newEvent.config = event.config;
 				newEvent.isRevert = event.isRevert;
-				MinecraftForge.EVENT_BUS.post(event);
+				MinecraftForge.EVENT_BUS.post(newEvent);
 			}
 			return null;
 		}

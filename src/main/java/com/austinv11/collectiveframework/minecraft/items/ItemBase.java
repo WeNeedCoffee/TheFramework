@@ -30,17 +30,4 @@ public abstract class ItemBase extends Item {
 	 */
 	public abstract String getModId();
 	
-	@Override
-	public String getUnlocalizedName(){//Formats the name
-		return String.format("item.%s%s", getModId().toLowerCase()+":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
-	}
-	
-	@Override
-	public String getUnlocalizedName(ItemStack item){//Formats the name
-		return String.format("item.%s%s", getModId().toLowerCase()+":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
-	}
-	
-	protected String getUnwrappedUnlocalizedName(String unlocalizedName){//Removes the "item." from the item name
-		return unlocalizedName.substring(unlocalizedName.indexOf(".")+1);
-	}
 }

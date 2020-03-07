@@ -29,12 +29,4 @@ public abstract class BlockBase extends Block {
 	 */
 	public abstract String getModId();
 	
-	@Override
-	public String getUnlocalizedName(){//Formats the name
-		return String.format("tile.%s%s", getModId().toLowerCase()+":", getUnwrappedUnlocalizedName(getUnwrappedUnlocalizedName(super.getUnlocalizedName())));
-	}
-	
-	protected String getUnwrappedUnlocalizedName(String unlocalizedName){//Removes the "item." from the item name
-		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
-	}
 }

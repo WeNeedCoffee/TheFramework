@@ -100,7 +100,7 @@ public class MinecraftTranslator {
 	public void onTooltipEvent(ItemTooltipEvent event) {
 		if (Config.translateItems)
 			try {
-					if (I18n.format(event.getItemStack().getUnlocalizedName())
+					if (I18n.format(event.getItemStack().getTranslationKey())
 							.equals(event.getItemStack().getDisplayName())) {
 						String toTranslate = event.getItemStack().getDisplayName();
 						event.getItemStack().setStackDisplayName(translateToLocal(toTranslate, "en"));

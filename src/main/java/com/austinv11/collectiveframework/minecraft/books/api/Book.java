@@ -65,7 +65,7 @@ public abstract class Book {
 	public NBTTagCompound getData(ItemStack stack) {
 		if (getDataStorageType() == DataStorageType.GLOBAL) {
 			if (globalData == null) {
-				File storage = new File(GLOBAL_DIR+bookItem.getModId()+"/"+bookItem.getUnlocalizedName()+".dat");
+				File storage = new File(GLOBAL_DIR+bookItem.getModId()+"/"+bookItem.getTranslationKey()+".dat");
 				if (!storage.exists())
 					return new NBTTagCompound();
 				try {
@@ -76,7 +76,7 @@ public abstract class Book {
 			}
 			return (NBTTagCompound) globalData.copy();
 		} else if (getDataStorageType() == DataStorageType.LOCAL) {
-			String key = bookItem.getModId()+":"+bookItem.getUnlocalizedName();
+			String key = bookItem.getModId()+":"+bookItem.getTranslationKey();
 			NBTBase retrieved = LocalBookData.retrieveLocalData(key);
 			if (retrieved == null)
 				return new NBTTagCompound();
@@ -100,7 +100,7 @@ public abstract class Book {
 				@Override
 				public void run() {
 					tag.setTag(player.getGameProfile().getId().toString(), data);
-					File storage = new File(GLOBAL_DIR+bookItem.getModId()+"/"+bookItem.getUnlocalizedName()+".dat");
+					File storage = new File(GLOBAL_DIR+bookItem.getModId()+"/"+bookItem.getTranslationKey()+".dat");
 					try {
 						CompressedStreamTools.write(tag, storage);
 					} catch (IOException e) {
@@ -115,7 +115,7 @@ public abstract class Book {
 				}
 			}.start();
 		} else if (getDataStorageType() == DataStorageType.LOCAL) {
-			String key = bookItem.getModId()+":"+bookItem.getUnlocalizedName();
+			String key = bookItem.getModId()+":"+bookItem.getTranslationKey();
 			tag.setTag(player.getGameProfile().getId().toString(), data);
 			LocalBookData.putLocalData(key, tag);
 		} else {
